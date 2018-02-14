@@ -1,26 +1,35 @@
-OBJS = ch2
-DBUG = ch2
+OBJS = ch2 ch2_1
+DBUG = ch2_debug ch2_1_debug
 CC = nasm
 CCFLAGS = -felf64
+DBFLAGS = $(CCFLAGS) -g
 LNK = ld -o
+ 
 
 all: clean $(OBJS)
+
+debug: ch2_debug ch2_1_debug
+
 
 ch2: ch2.o
 	$(LNK) $@ $^
 
+ch2_debug: ch2_debug.o
+	$(LNK) $@ -g $^
+
+ch2_1: ch2_1.o
+	$(LNK) $@ $^
+
+ch2_1_debug: ch2_1_debug.o
+	$(LNK) $@ -g $^
+
+
+%_debug.o: %.asm
+	$(CC) $(DBFLAGS) $< -o $@
+
 %.o: %.asm
 	$(CC) $(CCFLAGS) $< -o $@
 
-clean:
+clean::
 	rm -fr *.o
 
-
-#
-#debug-server: server.asm
-#	nasm -f  elf -g server.asm
-#	ld -melf_i386 -g server.o -o debug-server
-#
-#debug-client: client.asm
-#	nasm -f elf -g client.asm
-#	ld -melf_i386 -g client.o -o debug-client

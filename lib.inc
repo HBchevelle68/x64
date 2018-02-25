@@ -4,28 +4,51 @@ exit:
     mov rax, 60
     syscall
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 string_length:
     xor rax, rax
-.loop:
+
+    .loop:
     cmp byte [rdi+rax], 0
     je .end
     inc rax
     jmp .loop
-.end:
+
+    .end:
     ret
-
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 print_string:
     xor rax, rax
+
+    .loop:
+    cmp BYTE [rdi+rax*1], 0x0
+    je .end
+    lea rsi, [rdi+rax*1]
+    push rdi
+    push rax
+    call print_char
+    pop rax
+    pop rdi
+    inc rax
+    jmp .loop
+
+    .end:
     ret
 
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 print_char:
-    xor rax, rax
+    mov QWORD rax, 1
+    mov rdi, 1
+    mov rdx, 1
+    syscall
     ret
 
 print_newline:
-    xor rax, rax
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, 0xa
+    mov rdx, 1
+    syscall
     ret
 
 
@@ -64,4 +87,30 @@ parse_int:
 
 
 string_copy:
+    push rdi
+    push rsi
+    push rdx
+    call string_length
+    pop rdx
+    pop rsi
+    pop rdi
+
+    cmp rax, rdx
+    jae .excess
+
+    push rsi ;save address
+    xor rax, rax
+
+    .loop:
+    mov dl, BYTE [rdi+rax*1]
+    mov BYTE [rsi+rax*1], dl
+    inc rax
+    test dl, dl
+    jnz .loop
+
+    pop rax
+    ret
+
+    .excess:
+    xor rax, rax
     ret

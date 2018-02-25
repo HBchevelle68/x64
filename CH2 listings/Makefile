@@ -1,20 +1,26 @@
-OBJS = iolib
-DBUG = iolib_debug
+OBJS = ch2 ch2_1
+DBUG = ch2_debug ch2_1_debug
 CC = nasm
 CCFLAGS = -felf64
 DBFLAGS = $(CCFLAGS) -g
 LNK = ld -o
-
+ 
 
 all: clean $(OBJS)
 
-debug: clean $(DBUG)
+debug: ch2_debug ch2_1_debug
 
 
-ch2: iolib.o
+ch2: ch2.o
 	$(LNK) $@ $^
 
-ch2_debug: iolib_debug.o
+ch2_debug: ch2_debug.o
+	$(LNK) $@ -g $^
+
+ch2_1: ch2_1.o
+	$(LNK) $@ $^
+
+ch2_1_debug: ch2_1_debug.o
 	$(LNK) $@ -g $^
 
 
@@ -26,3 +32,4 @@ ch2_debug: iolib_debug.o
 
 clean::
 	rm -fr *.o
+

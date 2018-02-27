@@ -19,28 +19,21 @@ string_length:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 print_string:
     xor rax, rax
-
-    .loop:
-    cmp BYTE [rdi+rax*1], 0x0
-    je .end
-    lea rsi, [rdi+rax*1]
     push rdi
-    push rax
-    call print_char
-    pop rax
-    pop rdi
-    inc rax
-    jmp .loop
-
-    .end:
+    call string_length
+    pop rsi
+    mov rdx, rax
+    mov rdi, 1
+    mov rax, 1
+    syscall
     ret
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 print_char:
-    mov QWORD rax, 1
-    mov rdi, 1
-    mov rdx, 1
-    syscall
+    push rdi
+    mov rdi, rsp
+    call print_string
+    pop rdi
     ret
 
 print_newline:

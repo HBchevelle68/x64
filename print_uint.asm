@@ -1,4 +1,4 @@
- section .text
+section .text
         %include "lib.inc"
         global _start
         _start:
@@ -19,8 +19,8 @@ push r13
 push r14
 push r15
 
-        mov rdi, 'c'
-        call print_char
+        mov rdi, -1
+        call print_uint
         
 cmp r15, [rsp]
 jne .convention_error

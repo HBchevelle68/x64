@@ -1,28 +1,17 @@
-OBJS = iolib
-DBUG = iolib_debug
+OBJS = debug
 CC = nasm
 CCFLAGS = -felf64
-DBFLAGS = $(CCFLAGS) -g
+DBFLAGS = $(CCFLAGS) -g -F dwarf
 LNK = ld -o
 
 
 all: clean $(OBJS)
 
-debug: clean $(DBUG)
-
-
-ch2: iolib.o
-	$(LNK) $@ $^
-
-ch2_debug: iolib_debug.o
+debug: debug.o
 	$(LNK) $@ -g $^
 
-
-%_debug.o: %.asm
-	$(CC) $(DBFLAGS) $< -o $@
-
 %.o: %.asm
-	$(CC) $(CCFLAGS) $< -o $@
+	$(CC) $(DBFLAGS) $< -o $@
 
 clean::
 	rm -fr *.o

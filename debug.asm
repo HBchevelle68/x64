@@ -3,6 +3,7 @@ global _start
 section .data
     string1: db "abcdef10p", 0
     char1: db "A"
+    unint1: db "1239807"
 
 section .text
 
@@ -41,10 +42,34 @@ print_char:
     pop rdi
     ret
 
+print_uint:
+    mov rbp, rsp
+    mov rax, rdi
+    mov rdi, rsp
+    push 0
+    sub rsp, 16
+
+    dec rdi
+    mov r8, 10
+
+.loop:
+    xor rdx, rdx
+    div r8
+    or  dl, 0x30
+    dec rdi
+    mov [rdi], dl
+    test rax, rax
+    jnz .loop
+
+    call print_string
+
+    add rsp, 24
+    ret
+
 _start:
     nop
     nop
-    mov rdi, char1
-    call print_char
+    mov rdi, 1239807
+    call print_uint
     mov rdi, rax
     call exit

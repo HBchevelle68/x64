@@ -69,34 +69,56 @@ print_uint:
     ret
 
 
-print_int:
-    xor rax, rax
-    ret
+    print_int:
+        test rdi, rdi
+        jns print_uint
+        push rdi
+        mov rdi, '-'
+        call print_char
+        pop rdi
+        neg rdi
+        jmp print_uint
 
-string_equals:
-    xor rax, rax
-    ret
-
-
-read_char:
-    xor rax, rax
-    ret
-
-read_word:
-    ret
-
-; rdi points to a string
-; returns rax: number, rdx : length
-parse_uint:
-    xor rax, rax
-    ret
-
-; rdi points to a string
 ; returns rax: number, rdx : length
 parse_int:
+    mov al, byte [rdi]
+    cmp al, '-'
+    je .signed
+    jmp parse_uint
+.signed:
+    inc rdi
+    call parse_uint
+    neg rax
+    test rdx, rdx
+    jz .error
+
+    inc rdx
+    ret
+
+    .error:
     xor rax, rax
     ret
 
+; returns rax: number, rdx : length
+parse_uint:
+    mov r8, 10
+    xor rax, rax
+    xor rcx, rcx
+.loop:
+    movzx r9, byte [rdi + rcx]
+    cmp r9b, '0'
+    jb .end
+    cmp r9b, '9'
+    ja .end
+    xor rdx, rdx
+    mul r8
+    and r9b, 0x0f
+    add rax, r9
+    inc rcx
+    jmp .loop
+    .end:
+    mov rdx, rcx
+    ret
 
 string_copy:
     push rdi

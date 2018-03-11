@@ -43,6 +43,7 @@ print_char:
     ret
 
 print_uint:
+    push rbp
     mov rbp, rsp
     mov rax, rdi
     mov rdi, rsp
@@ -64,6 +65,7 @@ print_uint:
     call print_string
 
     add rsp, 24
+    pop rbp
     ret
 
 _start:
